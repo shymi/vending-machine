@@ -1,7 +1,7 @@
-package com.yordanov.vendingmachine.items.controller;
+package com.yordanov.vendingmachine.item.controller;
 
-import com.yordanov.vendingmachine.items.dto.CreateItemDTO;
-import com.yordanov.vendingmachine.items.dto.ItemDTO;
+import com.yordanov.vendingmachine.item.dto.CreateItemDTO;
+import com.yordanov.vendingmachine.item.dto.ItemDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;

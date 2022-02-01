@@ -1,8 +1,8 @@
-package com.yordanov.vendingmachine.items.service.impl;
+package com.yordanov.vendingmachine.item.service.impl;
 
-import com.yordanov.vendingmachine.items.dto.CreateItemDTO;
-import com.yordanov.vendingmachine.items.dto.ItemDTO;
-import com.yordanov.vendingmachine.items.service.IItemService;
+import com.yordanov.vendingmachine.item.dto.CreateItemDTO;
+import com.yordanov.vendingmachine.item.dto.ItemDTO;
+import com.yordanov.vendingmachine.item.service.IItemService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

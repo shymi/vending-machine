@@ -1,11 +1,12 @@
-package com.yordanov.vendingmachine.items.service;
+package com.yordanov.vendingmachine.item.dao;
 
-import com.yordanov.vendingmachine.items.dto.CreateItemDTO;
-import com.yordanov.vendingmachine.items.dto.ItemDTO;
+import com.yordanov.vendingmachine.item.dto.CreateItemDTO;
+import com.yordanov.vendingmachine.item.dto.ItemDTO;
+import com.yordanov.vendingmachine.item.entity.Item;
 
-import java.util.List;
+import java.util.Collection;
 
-public interface IItemService {
+public interface IItemDAO {
     /**
      * Create a new item in the vending machine
      *
@@ -13,14 +14,14 @@ public interface IItemService {
      *
      * @return the created item
      */
-    ItemDTO createItem(CreateItemDTO newItem);
+    Item createItem(CreateItemDTO newItem);
 
     /**
      * Get all items in the vending machine
      *
      * @return list of all items in the vending machine or null if there are no items
      */
-    List<ItemDTO> getAllItems();
+    Collection<Item> getAllItems();
 
     /**
      * Get information for a single item in the vending machine
@@ -29,7 +30,7 @@ public interface IItemService {
      *
      * @return the item if found or null if there is no item with given id
      */
-    ItemDTO getItem(Long itemId);
+    Item getItem(Long itemId);
 
     /**
      * Update a single item in the vending machine
@@ -38,7 +39,7 @@ public interface IItemService {
      *
      * @return the updated item if found or null if there was no item with given id
      */
-    ItemDTO updateItem(ItemDTO updateItem);
+    Item updateItem(ItemDTO updateItem);
 
     /**
      * Delete a single item in the vending machine
@@ -47,5 +48,5 @@ public interface IItemService {
      *
      * @return the updated item if found or null if there was no item with given id
      */
-    ItemDTO deleteItem(Long itemId);
+    Item deleteItem(Long itemId);
 }

@@ -1,8 +1,8 @@
-package com.yordanov.vendingmachine.items.controller.impl;
+package com.yordanov.vendingmachine.item.controller.impl;
 
-import com.yordanov.vendingmachine.items.controller.IItemController;
-import com.yordanov.vendingmachine.items.dto.CreateItemDTO;
-import com.yordanov.vendingmachine.items.dto.ItemDTO;
+import com.yordanov.vendingmachine.item.controller.IItemController;
+import com.yordanov.vendingmachine.item.dto.CreateItemDTO;
+import com.yordanov.vendingmachine.item.dto.ItemDTO;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
