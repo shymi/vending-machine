@@ -24,7 +24,7 @@ public class ItemDAOTest {
     }
 
     @Test
-    public void canInsertAndRetrieveItem() {
+    public void shouldInsertAndRetrieveItem() {
         int size = itemDAO.getAllItems().size();
         CreateItemDTO createItemReq = new CreateItemDTO("Fanta", (float)1.10, 10);
         Item item = itemDAO.createItem(createItemReq);
@@ -34,7 +34,7 @@ public class ItemDAOTest {
     }
 
     @Test
-    public void canInsertAndRemoveItem() {
+    public void shouldInsertAndRemoveItem() {
         int size = itemDAO.getAllItems().size();
         CreateItemDTO createItemReq = new CreateItemDTO("BBB", (float)1.50, 5);
         Item item = itemDAO.createItem(createItemReq);
@@ -45,7 +45,7 @@ public class ItemDAOTest {
     }
 
     @Test
-    public void canInsertAndFullyUpdateItem() {
+    public void shouldInsertAndFullyUpdateItem() {
         float newPrice = (float)2.30;
         int newAmount = 8;
         String newName = "Prisun+";
@@ -66,7 +66,7 @@ public class ItemDAOTest {
     }
 
     @Test
-    public void canInsertAndUpdateOnlyItemPrice() {
+    public void shouldInsertAndUpdateOnlyItemPrice() {
         float newPrice = (float)2.30;
 
         CreateItemDTO createItemReq = new CreateItemDTO("Prisun", (float)1.70, 5);
@@ -84,7 +84,7 @@ public class ItemDAOTest {
     }
 
     @Test
-    public void canInsertAndUpdateOnlyItemAmount() {
+    public void shouldInsertAndUpdateOnlyItemAmount() {
         int newAmount = 7;
 
         CreateItemDTO createItemReq = new CreateItemDTO("Prisun", (float)1.70, 5);
@@ -102,7 +102,7 @@ public class ItemDAOTest {
     }
 
     @Test
-    public void canInsertAndUpdateOnlyItemName() {
+    public void shouldInsertAndUpdateOnlyItemName() {
         String newName = "New Prisun";
 
         CreateItemDTO createItemReq = new CreateItemDTO("Prisun", (float)1.70, 5);
