@@ -79,14 +79,6 @@ public class ItemDAO implements IItemDAO {
     /** {@inheritDoc} */
     @Override
     public Item deleteItem(Long itemId) {
-        Item fetchedItem = getItem(itemId);
-
-        if (fetchedItem == null) {
-            return null;
-        }
-
-        REPOSITORY.remove(fetchedItem.getId());
-
-        return fetchedItem;
+        return REPOSITORY.remove(itemId);
     }
 }

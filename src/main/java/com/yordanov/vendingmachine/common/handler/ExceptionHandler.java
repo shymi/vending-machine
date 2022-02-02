@@ -1,8 +1,6 @@
-package com.yordanov.vendingmachine.util.exception.handler;
+package com.yordanov.vendingmachine.common.handler;
 
-import com.yordanov.vendingmachine.util.exception.error.ApiError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.yordanov.vendingmachine.common.error.ApiError;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -19,8 +17,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
 public class ExceptionHandler extends ResponseEntityExceptionHandler {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionHandler.class);
-
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,

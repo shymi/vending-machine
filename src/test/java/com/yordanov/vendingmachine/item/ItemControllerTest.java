@@ -3,7 +3,7 @@ package com.yordanov.vendingmachine.item;
 import com.yordanov.vendingmachine.item.dto.CreateItemDTO;
 import com.yordanov.vendingmachine.item.dto.ItemDTO;
 import com.yordanov.vendingmachine.item.dto.UpdateItemDTO;
-import com.yordanov.vendingmachine.util.exception.error.ApiError;
+import com.yordanov.vendingmachine.common.error.ApiError;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +15,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -33,15 +36,48 @@ public class ItemControllerTest {
     private MessageSource messageSource;
 
     @Test
+    public void contextLoads() {
+        assertThat(restTemplate).isNotNull();
+        assertThat(messageSource).isNotNull();
+    }
+
+    @Test
     public void shouldRetrieveAllItems() {
         createItem();
-        ResponseEntity<List> getListResponse = this.restTemplate.exchange(
+        ResponseEntity<ItemDTO[]> getListResponse = this.restTemplate.exchange(
                 getBaseUrl() + "/item/list",
                 HttpMethod.GET,
                 null,
-                List.class);
+                ItemDTO[].class);
         assertEquals(HttpStatus.OK.value(), getListResponse.getStatusCodeValue());
-        assertThat(HttpStatus.OK.value()).isGreaterThan(0);
+        assertThat(getListResponse.getBody().length).isGreaterThan(0);
+    }
+
+    @Test
+    public void shouldRetrieveEmptyArrayWhenThereAreNoItems() {
+        createItem();
+        ResponseEntity<ItemDTO[]> getListResponse = this.restTemplate.exchange(
+                getBaseUrl() + "/item/list",
+                HttpMethod.GET,
+                null,
+                ItemDTO[].class);
+
+        // should have at least 1 item
+        Arrays.stream(getListResponse.getBody()).forEach(item -> {
+            this.restTemplate.exchange(
+                    getBaseUrl() + "/item/" + item.getId(),
+                    HttpMethod.DELETE,
+                    null,
+                    ItemDTO.class);
+        });
+
+        getListResponse = this.restTemplate.exchange(
+                getBaseUrl() + "/item/list",
+                HttpMethod.GET,
+                null,
+                ItemDTO[].class);
+        assertEquals(HttpStatus.OK.value(), getListResponse.getStatusCodeValue());
+        assertThat(getListResponse.getBody().length).isEqualTo(0);
     }
 
     @Test

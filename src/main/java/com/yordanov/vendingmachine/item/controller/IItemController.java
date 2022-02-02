@@ -1,9 +1,10 @@
 package com.yordanov.vendingmachine.item.controller;
 
+import com.yordanov.vendingmachine.coin.dto.BalanceDTO;
 import com.yordanov.vendingmachine.item.dto.CreateItemDTO;
 import com.yordanov.vendingmachine.item.dto.ItemDTO;
 import com.yordanov.vendingmachine.item.dto.UpdateItemDTO;
-import com.yordanov.vendingmachine.util.exception.error.ApiError;
+import com.yordanov.vendingmachine.common.error.ApiError;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,10 +28,7 @@ public interface IItemController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "List retrieved",
                     content = { @Content(mediaType = "application/json", array = @ArraySchema(
-                            schema = @Schema(implementation = ItemDTO.class)))}),
-            @ApiResponse(responseCode = "404", description = "No items in vending machine",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ApiError.class))}) })
+                            schema = @Schema(implementation = ItemDTO.class)))}) })
     @GetMapping("/list")
     ResponseEntity getAllItems();
 
@@ -42,7 +40,7 @@ public interface IItemController {
             @ApiResponse(responseCode = "404", description = "No items in vending machine",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ApiError.class))}) })
-    @RequestMapping("/{id}")
+    @GetMapping("/{id}")
     ResponseEntity getItem(@PathVariable("id") Long id);
 
     @Operation(summary = "Add a single item in vending machine")
@@ -58,7 +56,7 @@ public interface IItemController {
 
     @Operation(summary = "Update a single item in vending machine")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Item retrieved",
+            @ApiResponse(responseCode = "200", description = "Updated Item",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ItemDTO.class))}),
             @ApiResponse(responseCode = "400", description = "Invalid request",
@@ -69,7 +67,7 @@ public interface IItemController {
 
     @Operation(summary = "Remove a single item in vending machine")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Item retrieved",
+            @ApiResponse(responseCode = "200", description = "Deleted item",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ItemDTO.class))}),
             @ApiResponse(responseCode = "404", description = "Item not found in vending machine",
@@ -77,4 +75,15 @@ public interface IItemController {
                             schema = @Schema(implementation = ApiError.class))}) })
     @DeleteMapping("/{id}")
     ResponseEntity deleteItem(@PathVariable("id") Long id);
+
+    @Operation(summary = "Purchase item")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Item purchased",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BalanceDTO.class))}),
+            @ApiResponse(responseCode = "404", description = "Item could not be purchased",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class))}) })
+    @DeleteMapping("/purchase/{id}")
+    ResponseEntity purchaseItem(@PathVariable("id") Long id);
 }

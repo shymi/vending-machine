@@ -19,7 +19,7 @@ public interface IItemDAO {
     /**
      * Get all items in the vending machine
      *
-     * @return list of all items in the vending machine or null if there are no items
+     * @return list of all items in the vending machine or empty list if there are no items
      */
     Collection<Item> getAllItems();
 
@@ -46,7 +46,7 @@ public interface IItemDAO {
      *
      * @param itemId item data to be updated
      *
-     * @return the updated item if found or null if there was no item with given id
+     * @return the deleted item if found or null if there was no item with given id
      */
     Item deleteItem(Long itemId);
 }
