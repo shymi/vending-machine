@@ -27,8 +27,6 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
             HttpHeaders headers,
             HttpStatus status,
             WebRequest request) {
-        LOGGER.error(ex.getMessage(), ex);
-
         FieldError err = ex.getBindingResult().getFieldError();
         String msg = err != null ? err.getDefaultMessage() : "Invalid request";
         return buildResponseEntity(new ApiError(HttpStatus.BAD_REQUEST, msg), HttpStatus.BAD_REQUEST);

@@ -2,6 +2,8 @@ package com.yordanov.vendingmachine.item.controller;
 
 import com.yordanov.vendingmachine.item.dto.CreateItemDTO;
 import com.yordanov.vendingmachine.item.dto.ItemDTO;
+import com.yordanov.vendingmachine.item.dto.UpdateItemDTO;
+import com.yordanov.vendingmachine.util.exception.error.ApiError;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
-import java.util.List;
 
 @RequestMapping("/item")
 public interface IItemController {
@@ -29,7 +29,8 @@ public interface IItemController {
                     content = { @Content(mediaType = "application/json", array = @ArraySchema(
                             schema = @Schema(implementation = ItemDTO.class)))}),
             @ApiResponse(responseCode = "404", description = "No items in vending machine",
-                    content = @Content) })
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class))}) })
     @GetMapping("/list")
     ResponseEntity getAllItems();
 
@@ -39,7 +40,8 @@ public interface IItemController {
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ItemDTO.class))}),
             @ApiResponse(responseCode = "404", description = "No items in vending machine",
-                    content = @Content) })
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class))}) })
     @RequestMapping("/{id}")
     ResponseEntity getItem(@PathVariable("id") Long id);
 
@@ -48,8 +50,9 @@ public interface IItemController {
             @ApiResponse(responseCode = "200", description = "Item retrieved",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ItemDTO.class))}),
-            @ApiResponse(responseCode = "400", description = "Invalid request body",
-                    content = @Content) })
+            @ApiResponse(responseCode = "400", description = "Invalid request",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class))}) })
     @PutMapping("")
     ResponseEntity addItem(@Valid @RequestBody CreateItemDTO item);
 
@@ -58,18 +61,20 @@ public interface IItemController {
             @ApiResponse(responseCode = "200", description = "Item retrieved",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ItemDTO.class))}),
-            @ApiResponse(responseCode = "400", description = "Invalid request body",
-                    content = @Content) })
-    @PostMapping("")
-    ResponseEntity updateItem(@Valid @RequestBody ItemDTO item);
+            @ApiResponse(responseCode = "400", description = "Invalid request",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class))}) })
+    @PostMapping("/{id}")
+    ResponseEntity updateItem(@PathVariable("id") Long id, @Valid @RequestBody UpdateItemDTO item);
 
     @Operation(summary = "Remove a single item in vending machine")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Item retrieved",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ItemDTO.class))}),
-            @ApiResponse(responseCode = "404", description = "Item in vending machine not found",
-                    content = @Content) })
+            @ApiResponse(responseCode = "404", description = "Item not found in vending machine",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class))}) })
     @DeleteMapping("/{id}")
-    void deleteItem(@Valid @PathVariable("id") Long id);
+    ResponseEntity deleteItem(@PathVariable("id") Long id);
 }

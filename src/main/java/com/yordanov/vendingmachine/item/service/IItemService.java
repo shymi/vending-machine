@@ -2,6 +2,7 @@ package com.yordanov.vendingmachine.item.service;
 
 import com.yordanov.vendingmachine.item.dto.CreateItemDTO;
 import com.yordanov.vendingmachine.item.dto.ItemDTO;
+import com.yordanov.vendingmachine.item.dto.UpdateItemDTO;
 
 import java.util.List;
 
@@ -38,7 +39,7 @@ public interface IItemService {
      *
      * @return the updated item if found or null if there was no item with given id
      */
-    ItemDTO updateItem(ItemDTO updateItem);
+    ItemDTO updateItem(Long id, UpdateItemDTO updateItem);
 
     /**
      * Delete a single item in the vending machine
