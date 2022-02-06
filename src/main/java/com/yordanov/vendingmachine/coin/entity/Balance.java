@@ -9,4 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Balance {
     private float balance = 0;
+
+    public Balance subtract(float value) {
+        this.balance = this.balance - value;
+        return this;
+    }
 }

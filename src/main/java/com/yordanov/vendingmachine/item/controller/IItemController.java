@@ -84,6 +84,6 @@ public interface IItemController {
             @ApiResponse(responseCode = "404", description = "Item could not be purchased",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ApiError.class))}) })
-    @DeleteMapping("/purchase/{id}")
+    @PostMapping("/purchase/{id}")
     ResponseEntity purchaseItem(@PathVariable("id") Long id);
 }

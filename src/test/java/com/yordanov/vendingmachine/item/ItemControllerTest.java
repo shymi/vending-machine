@@ -1,14 +1,14 @@
 package com.yordanov.vendingmachine.item;
 
+import com.yordanov.vendingmachine.coin.dto.AddCoinDTO;
+import com.yordanov.vendingmachine.coin.dto.BalanceDTO;
+import com.yordanov.vendingmachine.common.error.ApiError;
 import com.yordanov.vendingmachine.item.dto.CreateItemDTO;
 import com.yordanov.vendingmachine.item.dto.ItemDTO;
 import com.yordanov.vendingmachine.item.dto.UpdateItemDTO;
-import com.yordanov.vendingmachine.common.error.ApiError;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -16,20 +16,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.Locale;
 
+import static com.yordanov.vendingmachine.utils.URLUtils.getBaseUrl;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ItemControllerTest {
+
+public class ItemControllerTest extends AbstractControllerTest {
     private static final int INVALID_ID = -1;
 
-    @LocalServerPort
-    private int port;
     @Autowired
     private TestRestTemplate restTemplate;
     @Autowired
@@ -45,7 +41,7 @@ public class ItemControllerTest {
     public void shouldRetrieveAllItems() {
         createItem();
         ResponseEntity<ItemDTO[]> getListResponse = this.restTemplate.exchange(
-                getBaseUrl() + "/item/list",
+                getBaseUrl(port) + "/item/list",
                 HttpMethod.GET,
                 null,
                 ItemDTO[].class);
@@ -57,7 +53,7 @@ public class ItemControllerTest {
     public void shouldRetrieveEmptyArrayWhenThereAreNoItems() {
         createItem();
         ResponseEntity<ItemDTO[]> getListResponse = this.restTemplate.exchange(
-                getBaseUrl() + "/item/list",
+                getBaseUrl(port) + "/item/list",
                 HttpMethod.GET,
                 null,
                 ItemDTO[].class);
@@ -65,14 +61,14 @@ public class ItemControllerTest {
         // should have at least 1 item
         Arrays.stream(getListResponse.getBody()).forEach(item -> {
             this.restTemplate.exchange(
-                    getBaseUrl() + "/item/" + item.getId(),
+                    getBaseUrl(port) + "/item/" + item.getId(),
                     HttpMethod.DELETE,
                     null,
                     ItemDTO.class);
         });
 
         getListResponse = this.restTemplate.exchange(
-                getBaseUrl() + "/item/list",
+                getBaseUrl(port) + "/item/list",
                 HttpMethod.GET,
                 null,
                 ItemDTO[].class);
@@ -83,7 +79,7 @@ public class ItemControllerTest {
     @Test
     public void shouldCreateItem() {
         ResponseEntity<ItemDTO> createResponse = createItem();
-        assertEquals(HttpStatus.OK.value(), createResponse.getStatusCodeValue());
+        assertEquals(HttpStatus.CREATED.value(), createResponse.getStatusCodeValue());
 
         ResponseEntity<ItemDTO> getResponse = getItem(createResponse.getBody().getId());
         assertEquals(HttpStatus.OK.value(), getResponse.getStatusCodeValue());
@@ -101,7 +97,7 @@ public class ItemControllerTest {
         HttpEntity<CreateItemDTO> request = new HttpEntity<>(item);
 
         ResponseEntity<ApiError> response = this.restTemplate.exchange(
-                getBaseUrl() + "/item",
+                getBaseUrl(port) + "/item",
                 HttpMethod.PUT,
                 request,
                 ApiError.class);
@@ -118,7 +114,7 @@ public class ItemControllerTest {
         request = new HttpEntity<>(item);
 
         response = this.restTemplate.exchange(
-                getBaseUrl() + "/item",
+                getBaseUrl(port) + "/item",
                 HttpMethod.PUT,
                 request,
                 ApiError.class);
@@ -135,7 +131,7 @@ public class ItemControllerTest {
         request = new HttpEntity<>(item);
 
         response = this.restTemplate.exchange(
-                getBaseUrl() + "/item",
+                getBaseUrl(port) + "/item",
                 HttpMethod.PUT,
                 request,
                 ApiError.class);
@@ -154,7 +150,7 @@ public class ItemControllerTest {
         HttpEntity<CreateItemDTO> request = new HttpEntity<>(item);
 
         ResponseEntity<ApiError> response = this.restTemplate.exchange(
-                getBaseUrl() + "/item",
+                getBaseUrl(port) + "/item",
                 HttpMethod.PUT,
                 request,
                 ApiError.class);
@@ -171,7 +167,7 @@ public class ItemControllerTest {
         request = new HttpEntity<>(item);
 
         response = this.restTemplate.exchange(
-                getBaseUrl() + "/item",
+                getBaseUrl(port) + "/item",
                 HttpMethod.PUT,
                 request,
                 ApiError.class);
@@ -190,7 +186,7 @@ public class ItemControllerTest {
         HttpEntity<CreateItemDTO> request = new HttpEntity<>(item);
 
         ResponseEntity<ApiError> response = this.restTemplate.exchange(
-                getBaseUrl() + "/item",
+                getBaseUrl(port) + "/item",
                 HttpMethod.PUT,
                 request,
                 ApiError.class);
@@ -207,7 +203,7 @@ public class ItemControllerTest {
         request = new HttpEntity<>(item);
 
         response = this.restTemplate.exchange(
-                getBaseUrl() + "/item",
+                getBaseUrl(port) + "/item",
                 HttpMethod.PUT,
                 request,
                 ApiError.class);
@@ -224,7 +220,7 @@ public class ItemControllerTest {
         HttpEntity<UpdateItemDTO> request = new HttpEntity<>(item);
 
         ResponseEntity<ApiError> response = this.restTemplate.exchange(
-                getBaseUrl() + "/item/" + createdItemResponse.getBody().getId(),
+                getBaseUrl(port) + "/item/" + createdItemResponse.getBody().getId(),
                 HttpMethod.POST,
                 request,
                 ApiError.class);
@@ -244,7 +240,7 @@ public class ItemControllerTest {
         HttpEntity<UpdateItemDTO> request = new HttpEntity<>(item);
 
         this.restTemplate.exchange(
-                getBaseUrl() + "/item/" + createdItemResponse.getBody().getId(),
+                getBaseUrl(port) + "/item/" + createdItemResponse.getBody().getId(),
                 HttpMethod.POST,
                 request,
                 ItemDTO.class);
@@ -266,7 +262,7 @@ public class ItemControllerTest {
         HttpEntity<UpdateItemDTO> request = new HttpEntity<>(item);
 
         this.restTemplate.exchange(
-                getBaseUrl() + "/item/" + createdItemResponse.getBody().getId(),
+                getBaseUrl(port) + "/item/" + createdItemResponse.getBody().getId(),
                 HttpMethod.POST,
                 request,
                 ItemDTO.class);
@@ -288,7 +284,7 @@ public class ItemControllerTest {
         HttpEntity<UpdateItemDTO> request = new HttpEntity<>(item);
 
         this.restTemplate.exchange(
-                getBaseUrl() + "/item/" + createdItemResponse.getBody().getId(),
+                getBaseUrl(port) + "/item/" + createdItemResponse.getBody().getId(),
                 HttpMethod.POST,
                 request,
                 ItemDTO.class);
@@ -310,7 +306,7 @@ public class ItemControllerTest {
         HttpEntity<UpdateItemDTO> request = new HttpEntity<>(item);
 
         ResponseEntity<ApiError> updateResponse = this.restTemplate.exchange(
-                getBaseUrl() + "/item/" + createdItemResponse.getBody().getId(),
+                getBaseUrl(port) + "/item/" + createdItemResponse.getBody().getId(),
                 HttpMethod.POST,
                 request,
                 ApiError.class);
@@ -335,7 +331,7 @@ public class ItemControllerTest {
         HttpEntity<UpdateItemDTO> request = new HttpEntity<>(item);
 
         ResponseEntity<ApiError> updateResponse = this.restTemplate.exchange(
-                getBaseUrl() + "/item/" + createdItemResponse.getBody().getId(),
+                getBaseUrl(port) + "/item/" + createdItemResponse.getBody().getId(),
                 HttpMethod.POST,
                 request,
                 ApiError.class);
@@ -349,7 +345,7 @@ public class ItemControllerTest {
         item.setAmount(20);
         request = new HttpEntity<>(item);
         updateResponse = this.restTemplate.exchange(
-                getBaseUrl() + "/item/" + createdItemResponse.getBody().getId(),
+                getBaseUrl(port) + "/item/" + createdItemResponse.getBody().getId(),
                 HttpMethod.POST,
                 request,
                 ApiError.class);
@@ -373,7 +369,7 @@ public class ItemControllerTest {
         HttpEntity<UpdateItemDTO> request = new HttpEntity<>(item);
 
         ResponseEntity<ApiError> updateResponse = this.restTemplate.exchange(
-                getBaseUrl() + "/item/" + INVALID_ID,
+                getBaseUrl(port) + "/item/" + INVALID_ID,
                 HttpMethod.POST,
                 request,
                 ApiError.class);
@@ -394,7 +390,7 @@ public class ItemControllerTest {
         ResponseEntity<ItemDTO> createdItemResponse = createItem();
 
         ResponseEntity<ItemDTO> deleteResponse = this.restTemplate.exchange(
-                getBaseUrl() + "/item/" + createdItemResponse.getBody().getId(),
+                getBaseUrl(port) + "/item/" + createdItemResponse.getBody().getId(),
                 HttpMethod.DELETE,
                 null,
                 ItemDTO.class);
@@ -404,7 +400,7 @@ public class ItemControllerTest {
         assertEquals(createdItemResponse.getBody().getAmount(), deleteResponse.getBody().getAmount());
 
         ResponseEntity<ApiError> getResponse = this.restTemplate.exchange(
-                getBaseUrl() + "/item/" + createdItemResponse.getBody().getId(),
+                getBaseUrl(port) + "/item/" + createdItemResponse.getBody().getId(),
                 HttpMethod.GET,
                 null,
                 ApiError.class);
@@ -418,7 +414,7 @@ public class ItemControllerTest {
     @Test
     public void shouldReturnErrorOnNotFindingAnItem() {
         ResponseEntity<ApiError> deleteResponse = this.restTemplate.exchange(
-                getBaseUrl() + "/item/" + INVALID_ID,
+                getBaseUrl(port) + "/item/" + INVALID_ID,
                 HttpMethod.DELETE,
                 null,
                 ApiError.class);
@@ -428,12 +424,182 @@ public class ItemControllerTest {
                 deleteResponse.getBody().getMessage());
     }
 
+    @Test
+    public void shouldBeAbleToBuyAnItem() {
+        ResponseEntity<ItemDTO> createdItemResponse = createItem();
+
+        this.restTemplate.exchange(
+                getBaseUrl(port) + "/coin",
+                HttpMethod.DELETE,
+                null,
+                ItemDTO.class);
+
+        AddCoinDTO addCoin = new AddCoinDTO("1lv");
+        HttpEntity<AddCoinDTO> request = new HttpEntity<>(addCoin);
+        this.restTemplate.exchange(
+                getBaseUrl(port) + "/coin",
+                HttpMethod.POST,
+                request,
+                ItemDTO.class);
+
+        addCoin = new AddCoinDTO("20st");
+        request = new HttpEntity<>(addCoin);
+        this.restTemplate.exchange(
+                getBaseUrl(port) + "/coin",
+                HttpMethod.POST,
+                request,
+                ItemDTO.class);
+
+        ResponseEntity<BalanceDTO> purchaseResponse = this.restTemplate.exchange(
+                getBaseUrl(port) + "/item/purchase/" + createdItemResponse.getBody().getId(),
+                HttpMethod.POST,
+                null,
+                BalanceDTO.class);
+        assertEquals(HttpStatus.OK.value(), purchaseResponse.getStatusCodeValue());
+        assertEquals(0.00, purchaseResponse.getBody().getBalance());
+    }
+
+    @Test
+    public void shouldBeAbleToBuyAnItemAndHaveAPositiveBalance() {
+        Float expected = (float) 0.8;
+        ResponseEntity<ItemDTO> createdItemResponse = createItem();
+
+        this.restTemplate.exchange(
+                getBaseUrl(port) + "/coin",
+                HttpMethod.DELETE,
+                null,
+                BalanceDTO.class);
+
+        AddCoinDTO addCoin = new AddCoinDTO("1lv");
+        HttpEntity<AddCoinDTO> request = new HttpEntity<>(addCoin);
+        this.restTemplate.exchange(
+                getBaseUrl(port) + "/coin",
+                HttpMethod.POST,
+                request,
+                BalanceDTO.class);
+
+        addCoin = new AddCoinDTO("1lv");
+        request = new HttpEntity<>(addCoin);
+        this.restTemplate.exchange(
+                getBaseUrl(port) + "/coin",
+                HttpMethod.POST,
+                request,
+                BalanceDTO.class);
+
+        ResponseEntity<BalanceDTO> purchaseResponse = this.restTemplate.exchange(
+                getBaseUrl(port) + "/item/purchase/" + createdItemResponse.getBody().getId(),
+                HttpMethod.POST,
+                null,
+                BalanceDTO.class);
+        assertEquals(HttpStatus.OK.value(), purchaseResponse.getStatusCodeValue());
+        assertEquals(expected, purchaseResponse.getBody().getBalance());
+
+        ResponseEntity<ItemDTO> afterPurchaseItem = this.restTemplate.exchange(
+                getBaseUrl(port) + "/item/" + createdItemResponse.getBody().getId(),
+                HttpMethod.GET,
+                null,
+                ItemDTO.class);
+        assertEquals(createdItemResponse.getBody().getAmount() - 1, afterPurchaseItem.getBody().getAmount());
+    }
+
+    @Test
+    public void shouldNotBeAbleToBuyAnItemWhenInsufficientBalance() {
+        ResponseEntity<ItemDTO> createdItemResponse = createItem();
+
+        this.restTemplate.exchange(
+                getBaseUrl(port) + "/coin",
+                HttpMethod.DELETE,
+                null,
+                ItemDTO.class);
+
+        AddCoinDTO addCoin = new AddCoinDTO("1lv");
+        HttpEntity<AddCoinDTO> request = new HttpEntity<>(addCoin);
+        this.restTemplate.exchange(
+                getBaseUrl(port) + "/coin",
+                HttpMethod.POST,
+                request,
+                ItemDTO.class);
+
+        ResponseEntity<ApiError> purchaseResponse = this.restTemplate.exchange(
+                getBaseUrl(port) + "/item/purchase/" + createdItemResponse.getBody().getId(),
+                HttpMethod.POST,
+                null,
+                ApiError.class);
+        assertEquals(HttpStatus.BAD_REQUEST.value(), purchaseResponse.getStatusCodeValue());
+        assertEquals(
+                messageSource.getMessage("balance.insufficient", null, Locale.getDefault()),
+                purchaseResponse.getBody().getMessage());
+    }
+
+    @Test
+    public void shouldNotBeAbleToBuyAnItemWithNoAmount() {
+        ResponseEntity<ItemDTO> createdItemResponse = createItem();
+        UpdateItemDTO item = new UpdateItemDTO();
+        item.setAmount(0);
+        HttpEntity<UpdateItemDTO> updateItem = new HttpEntity<>(item);
+        this.restTemplate.exchange(
+                getBaseUrl(port) + "/item/" + createdItemResponse.getBody().getId(),
+                HttpMethod.POST,
+                updateItem,
+                ApiError.class);
+
+        this.restTemplate.exchange(
+                getBaseUrl(port) + "/coin",
+                HttpMethod.DELETE,
+                null,
+                ItemDTO.class);
+
+        AddCoinDTO addCoin = new AddCoinDTO("1lv");
+        HttpEntity<AddCoinDTO> request = new HttpEntity<>(addCoin);
+        this.restTemplate.exchange(
+                getBaseUrl(port) + "/coin",
+                HttpMethod.POST,
+                request,
+                ItemDTO.class);
+
+        ResponseEntity<ApiError> purchaseResponse = this.restTemplate.exchange(
+                getBaseUrl(port) + "/item/purchase/" + createdItemResponse.getBody().getId(),
+                HttpMethod.POST,
+                null,
+                ApiError.class);
+        assertEquals(HttpStatus.BAD_REQUEST.value(), purchaseResponse.getStatusCodeValue());
+        assertEquals(
+                messageSource.getMessage("item.no.amount", null, Locale.getDefault()),
+                purchaseResponse.getBody().getMessage());
+    }
+
+    @Test
+    public void shouldNotBeAbleToBuyAMissingItem() {
+        createItem();
+
+        this.restTemplate.exchange(
+                getBaseUrl(port) + "/coin",
+                HttpMethod.DELETE,
+                null,
+                ItemDTO.class);
+
+        AddCoinDTO addCoin = new AddCoinDTO("1lv");
+        HttpEntity<AddCoinDTO> request = new HttpEntity<>(addCoin);
+        this.restTemplate.exchange(
+                getBaseUrl(port) + "/coin",
+                HttpMethod.POST,
+                request,
+                ItemDTO.class);
+
+        ResponseEntity<ApiError> purchaseResponse = this.restTemplate.exchange(
+                getBaseUrl(port) + "/item/purchase/" + INVALID_ID,
+                HttpMethod.POST,
+                null,
+                ApiError.class);
+        assertEquals(HttpStatus.NOT_FOUND.value(), purchaseResponse.getStatusCodeValue());
+    }
+
     private ResponseEntity<ItemDTO> createItem() {
         CreateItemDTO item = new CreateItemDTO("Fanta", (float)1.20, 5);
         HttpEntity<CreateItemDTO> request = new HttpEntity<>(item);
 
         return this.restTemplate.exchange(
-                getBaseUrl() + "/item",
+                getBaseUrl(port) + "/item",
                 HttpMethod.PUT,
                 request,
                 ItemDTO.class);
@@ -441,13 +607,9 @@ public class ItemControllerTest {
 
     private ResponseEntity<ItemDTO> getItem(Long id) {
         return this.restTemplate.exchange(
-                getBaseUrl() + "/item/" + id,
+                getBaseUrl(port) + "/item/" + id,
                 HttpMethod.GET,
                 null,
                 ItemDTO.class);
-    }
-
-    private String getBaseUrl() {
-        return  "http://localhost:" + port + "/api/v1";
     }
 }

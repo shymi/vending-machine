@@ -49,4 +49,11 @@ public interface IItemDAO {
      * @return the deleted item if found or null if there was no item with given id
      */
     Item deleteItem(Long itemId);
+
+    /**
+     * Decrease item amount with 1
+     *
+     * @param itemId item data to be updated
+     */
+    void decrementAmount(Long itemId);
 }

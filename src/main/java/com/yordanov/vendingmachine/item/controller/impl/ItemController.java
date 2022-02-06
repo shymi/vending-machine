@@ -1,13 +1,16 @@
 package com.yordanov.vendingmachine.item.controller.impl;
 
+import com.yordanov.vendingmachine.coin.dto.BalanceDTO;
 import com.yordanov.vendingmachine.common.error.ApiError;
 import com.yordanov.vendingmachine.common.exception.InvalidRequestException;
 import com.yordanov.vendingmachine.item.controller.IItemController;
 import com.yordanov.vendingmachine.item.dto.CreateItemDTO;
 import com.yordanov.vendingmachine.item.dto.ItemDTO;
 import com.yordanov.vendingmachine.item.dto.UpdateItemDTO;
+import com.yordanov.vendingmachine.item.exception.InsufficientBalanceException;
 import com.yordanov.vendingmachine.item.exception.ItemMissingException;
-import com.yordanov.vendingmachine.item.service.impl.ItemService;
+import com.yordanov.vendingmachine.item.exception.ItemNoAmount;
+import com.yordanov.vendingmachine.item.service.IItemService;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +21,9 @@ import java.util.Locale;
 @RestController
 public class ItemController implements IItemController {
     private final MessageSource messageSource;
-    private final ItemService itemService;
+    private final IItemService itemService;
 
-    public ItemController(ItemService itemService, MessageSource messageSource) {
+    public ItemController(IItemService itemService, MessageSource messageSource) {
         this.itemService = itemService;
         this.messageSource = messageSource;
     }
@@ -43,7 +46,7 @@ public class ItemController implements IItemController {
 
     @Override
     public ResponseEntity addItem(CreateItemDTO item) {
-        return ResponseEntity.ok(itemService.createItem(item));
+        return ResponseEntity.status(HttpStatus.CREATED).body(itemService.createItem(item));
     }
 
     @Override
@@ -71,7 +74,16 @@ public class ItemController implements IItemController {
 
     @Override
     public ResponseEntity purchaseItem(Long id) {
-        return null;
+        try {
+            BalanceDTO balance = itemService.purchase(id);
+            return ResponseEntity.ok(balance);
+        } catch (InsufficientBalanceException e) {
+            return buildApiError(HttpStatus.BAD_REQUEST, "balance.insufficient");
+        } catch (ItemNoAmount e) {
+            return buildApiError(HttpStatus.BAD_REQUEST, "item.no.amount");
+        } catch (ItemMissingException e) {
+            return buildApiError(HttpStatus.NOT_FOUND, "item.missing");
+        }
     }
 
     private ResponseEntity buildApiError(final HttpStatus status, final String messageId) {

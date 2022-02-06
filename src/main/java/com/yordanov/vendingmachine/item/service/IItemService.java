@@ -1,10 +1,13 @@
 package com.yordanov.vendingmachine.item.service;
 
+import com.yordanov.vendingmachine.coin.dto.BalanceDTO;
 import com.yordanov.vendingmachine.common.exception.InvalidRequestException;
 import com.yordanov.vendingmachine.item.dto.CreateItemDTO;
 import com.yordanov.vendingmachine.item.dto.ItemDTO;
 import com.yordanov.vendingmachine.item.dto.UpdateItemDTO;
+import com.yordanov.vendingmachine.item.exception.InsufficientBalanceException;
 import com.yordanov.vendingmachine.item.exception.ItemMissingException;
+import com.yordanov.vendingmachine.item.exception.ItemNoAmount;
 
 import java.util.List;
 
@@ -59,4 +62,16 @@ public interface IItemService {
      * @return the updated item if found or null if there was no item with given id
      */
     ItemDTO deleteItem(Long itemId) throws ItemMissingException;
+
+    /**
+     * Purchase an item with the given id
+     *
+     * @param id item id which will be purchased
+     *
+     * @return the balance after purchase
+     *
+     * @throws ItemMissingException when item is missing
+     * @throws InsufficientBalanceException when balance is insufficient
+     */
+    BalanceDTO purchase(Long id) throws ItemMissingException, InsufficientBalanceException, ItemNoAmount;
 }

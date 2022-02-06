@@ -1,7 +1,8 @@
 package com.yordanov.vendingmachine.coin.dao;
 
-import com.yordanov.vendingmachine.coin.dto.AddCoinDTO;
-import com.yordanov.vendingmachine.coin.dto.BalanceDTO;
+import com.yordanov.vendingmachine.coin.entity.Balance;
+import com.yordanov.vendingmachine.coin.enums.Coin;
+import com.yordanov.vendingmachine.item.exception.InsufficientBalanceException;
 
 public interface ICoinDao {
     /**
@@ -9,7 +10,7 @@ public interface ICoinDao {
      *
      * @return current balance
      */
-    BalanceDTO getCurrentBalance();
+    Balance getCurrentBalance();
 
     /**
      * Add coin to balance
@@ -18,14 +19,14 @@ public interface ICoinDao {
      *
      * @return balance after coin has been added
      */
-    BalanceDTO addCoin(AddCoinDTO addCoin);
+    Balance addCoin(Coin addCoin);
 
     /**
      * Reset balance
      *
      * @return balance after reset
      */
-    BalanceDTO resetBalance();
+    Balance resetBalance();
 
     /**
      * Subtract from balance
@@ -34,5 +35,5 @@ public interface ICoinDao {
      *
      * @return the balance after subtraction
      */
-    BalanceDTO subtractFromBalance(float amount);
+    Balance subtractFromBalance(float amount) throws InsufficientBalanceException;
 }

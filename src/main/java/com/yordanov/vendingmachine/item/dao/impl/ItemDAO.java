@@ -7,9 +7,8 @@ import com.yordanov.vendingmachine.item.entity.Item;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 public class ItemDAO implements IItemDAO {
@@ -17,25 +16,33 @@ public class ItemDAO implements IItemDAO {
      * Using Long as an ID, because of force of habit(had too many problems with int ids in production)
      * Integer values for current requirements should be plenty enough
     **/
-    private static final Map<Long, Item> REPOSITORY = new ConcurrentHashMap<>();
-    private static final AtomicLong CURRENT_INDEX = new AtomicLong(1);
+    private static final Map<Long, Item> REPOSITORY = new HashMap<>();
+    private static Long CURRENT_INDEX = (long)1;
 
     // initializing with some data
     static {
-        Item item = new Item(CURRENT_INDEX.getAndIncrement(), "Coca Cola", (float)1.20, 10);
+        Item item = new Item(CURRENT_INDEX, "Coca Cola", (float)1.20, 10);
         REPOSITORY.put(item.getId(), item);
 
-        item = new Item(CURRENT_INDEX.getAndIncrement(), "Sprite", (float)1.10, 9);
+        CURRENT_INDEX++;
+
+        item = new Item(CURRENT_INDEX, "Sprite", (float)1.10, 9);
         REPOSITORY.put(item.getId(), item);
 
-        item = new Item(CURRENT_INDEX.getAndIncrement(), "San Benedetto", (float)2.20, 8);
+        CURRENT_INDEX++;
+
+        item = new Item(CURRENT_INDEX, "San Benedetto", (float)2.20, 8);
         REPOSITORY.put(item.getId(), item);
+
+        CURRENT_INDEX++;
     }
 
     /** {@inheritDoc} */
     @Override
     public Item createItem(CreateItemDTO newItem) {
-        Item item = new Item(CURRENT_INDEX.getAndIncrement(), newItem.getName(), newItem.getPrice(), newItem.getAmount());
+        Item item = new Item(CURRENT_INDEX, newItem.getName(), newItem.getPrice(), newItem.getAmount());
+        CURRENT_INDEX++;
+
         REPOSITORY.put(item.getId(), item);
         return item;
     }
@@ -80,5 +87,10 @@ public class ItemDAO implements IItemDAO {
     @Override
     public Item deleteItem(Long itemId) {
         return REPOSITORY.remove(itemId);
+    }
+
+    @Override
+    public void decrementAmount(Long itemId) {
+        REPOSITORY.get(itemId).setAmount(REPOSITORY.get(itemId).getAmount() - 1);
     }
 }

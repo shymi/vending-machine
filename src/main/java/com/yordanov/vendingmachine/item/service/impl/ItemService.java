@@ -1,13 +1,17 @@
 package com.yordanov.vendingmachine.item.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yordanov.vendingmachine.coin.dao.ICoinDao;
+import com.yordanov.vendingmachine.coin.dto.BalanceDTO;
 import com.yordanov.vendingmachine.common.exception.InvalidRequestException;
-import com.yordanov.vendingmachine.item.dao.impl.ItemDAO;
+import com.yordanov.vendingmachine.item.dao.IItemDAO;
 import com.yordanov.vendingmachine.item.dto.CreateItemDTO;
 import com.yordanov.vendingmachine.item.dto.ItemDTO;
 import com.yordanov.vendingmachine.item.dto.UpdateItemDTO;
 import com.yordanov.vendingmachine.item.entity.Item;
+import com.yordanov.vendingmachine.item.exception.InsufficientBalanceException;
 import com.yordanov.vendingmachine.item.exception.ItemMissingException;
+import com.yordanov.vendingmachine.item.exception.ItemNoAmount;
 import com.yordanov.vendingmachine.item.service.IItemService;
 import com.yordanov.vendingmachine.item.validator.ItemUpdateValidator;
 import org.springframework.stereotype.Service;
@@ -21,10 +25,12 @@ import java.util.stream.Collectors;
 public class ItemService implements IItemService {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    private final ItemDAO itemDAO;
+    private final IItemDAO itemDAO;
+    private final ICoinDao coinDao;
 
-    public ItemService(ItemDAO itemDAO) {
+    public ItemService(IItemDAO itemDAO, ICoinDao coinDao) {
         this.itemDAO = itemDAO;
+        this.coinDao = coinDao;
     }
 
     /** {@inheritDoc} */
@@ -85,5 +91,23 @@ public class ItemService implements IItemService {
         }
 
         return MAPPER.convertValue(deleted, ItemDTO.class);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public BalanceDTO purchase(Long id) throws ItemMissingException, InsufficientBalanceException, ItemNoAmount {
+        Item item = itemDAO.getItem(id);
+
+        if (item == null) {
+            throw new ItemMissingException();
+        }
+
+        if (item.getAmount() == 0) {
+            throw new ItemNoAmount();
+        }
+
+        itemDAO.decrementAmount(id);
+
+        return MAPPER.convertValue(coinDao.subtractFromBalance(item.getPrice()), BalanceDTO.class);
     }
 }
